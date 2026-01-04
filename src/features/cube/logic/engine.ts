@@ -1,4 +1,3 @@
-// src/logic/engine.ts
 import type { Color, CubeState, FacePosition } from '../types';
 
 export const rotateFace = (face: Color[], clockwise: boolean) => {
@@ -16,9 +15,8 @@ export const moveCube2x2 = (state: CubeState, move: string): CubeState => {
   const face = move[0] as FacePosition;
 
   s[face] = rotateFace(s[face], !isPrime);
-  const { F, B, L, R, U, D } = s; // Destructuring para facilitar acceso
+  const { F, B, L, R, U, D } = s; 
 
-  // Lógica de permutación de caras adyacentes
   if (face === 'U') {
      const temp = [F[0], F[1]];
      if (!isPrime) {
@@ -60,3 +58,4 @@ export const moveCube2x2 = (state: CubeState, move: string): CubeState => {
 
   return s;
 };
+

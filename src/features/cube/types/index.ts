@@ -1,4 +1,3 @@
-// src/types/index.ts
 export type Color = 'W' | 'Y' | 'R' | 'O' | 'G' | 'B';
 export type FacePosition = 'U' | 'D' | 'L' | 'R' | 'F' | 'B';
 

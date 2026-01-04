@@ -1,8 +1,6 @@
-// src/logic/solver.ts
 import type { CubeState, Color } from '../types';
 import { moveCube2x2 } from './engine';
 
-// Helper local
 const stateToString = (s: CubeState) => `${s.U.join('')}${s.D.join('')}${s.L.join('')}${s.R.join('')}${s.F.join('')}${s.B.join('')}`;
 
 export const detectOpposites = (s: CubeState): Record<string, string> | null => {
@@ -89,7 +87,7 @@ export const solveBiDirectional = (startState: CubeState): string[] | string | n
         backwardQueue.push(s);
     });
 
-    for(let depth = 0; depth < 8; depth++) {
+    for(let depth = 0; depth < 9; depth++) {
         let count = forwardQueue.length;
         while(count--) {
             const curr = forwardQueue.shift()!;
