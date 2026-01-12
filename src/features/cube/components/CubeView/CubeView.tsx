@@ -22,34 +22,47 @@ interface CubeViewProps {
     transform: string;
     activeRotation: { axis: string, value: number, cubies: number[] } | null;
     animatingMove: string | null;
-    isHinting: boolean;
-    isDragging: React.MutableRefObject<boolean>;
-    handlePointerDown: (e: React.MouseEvent | React.TouchEvent) => void;
-    handlePointerMove: (e: React.MouseEvent | React.TouchEvent) => void;
-    onResetView: () => void;
+    isHinting?: boolean;
+    isDragging?: React.MutableRefObject<boolean>;
+    handlePointerDown?: (e: React.MouseEvent | React.TouchEvent) => void;
+    handlePointerMove?: (e: React.MouseEvent | React.TouchEvent) => void;
+    onResetView?: () => void;
+    variant?: 'default' | 'mini';
 }
 
 export const CubeView = ({ 
-    state, transform, activeRotation, animatingMove, isHinting, 
-    isDragging, handlePointerDown, handlePointerMove, onResetView 
+    state, transform, activeRotation, animatingMove, 
+    isHinting = false, 
+    isDragging, 
+    handlePointerDown, 
+    handlePointerMove, 
+    onResetView,
+    variant = 'default'
 }: CubeViewProps) => {
     
+    const isMini = variant === 'mini';
+
+    const containerClasses = isMini
+        ? "relative w-full h-full flex items-center justify-center perspective pointer-events-none" 
+        : "flex-1 relative flex items-center justify-center perspective bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-800 via-gray-950 to-black cursor-move touch-none"; 
+
     return (
         <div 
-            className="flex-1 relative flex items-center justify-center perspective bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-800 via-gray-950 to-black cursor-move touch-none"
-            onMouseDown={handlePointerDown} 
-            onMouseMove={handlePointerMove} 
-            onMouseUp={() => isDragging.current = false} 
-            onMouseLeave={() => isDragging.current = false}
-            onTouchStart={handlePointerDown} 
-            onTouchMove={handlePointerMove} 
-            onTouchEnd={() => isDragging.current = false}
+            className={containerClasses}
+            onMouseDown={!isMini ? handlePointerDown : undefined} 
+            onMouseMove={!isMini ? handlePointerMove : undefined} 
+            onMouseUp={!isMini && isDragging ? () => isDragging.current = false : undefined} 
+            onMouseLeave={!isMini && isDragging ? () => isDragging.current = false : undefined}
+            onTouchStart={!isMini ? handlePointerDown : undefined} 
+            onTouchMove={!isMini ? handlePointerMove : undefined} 
+            onTouchEnd={!isMini && isDragging ? () => isDragging.current = false : undefined}
         >
             <div 
                 className="relative w-0 h-0 transform-style-3d" 
                 style={{ 
                   transform: transform,
-                  transition: isDragging.current ? 'none' : isHinting ? 'transform 1.5s cubic-bezier(0.4, 0, 0.2, 1)' : 'transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)' 
+                  // CAMBIO: Aumentado a 1.5s para movimientos más suaves y controlados.
+                  transition: isDragging?.current ? 'none' : isHinting ? 'transform 1.5s cubic-bezier(0.4, 0, 0.2, 1)' : 'transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1)' 
                 }}
             >
                 {CUBIES_CONFIG.map((config) => {
@@ -80,7 +93,7 @@ export const CubeView = ({
                 {animatingMove && <ArrowOverlay move={animatingMove} />}
             </div>
 
-            {(!animatingMove && !isHinting) && (
+            {(!animatingMove && !isHinting && !isMini && onResetView) && (
                 <button onClick={onResetView} className="absolute bottom-6 right-6 bg-gray-800/80 p-3 rounded-full text-white hover:bg-gray-700 backdrop-blur-sm border border-gray-700 shadow-lg z-40 transition-transform active:scale-95"><Eye size={24}/></button>
             )}
             

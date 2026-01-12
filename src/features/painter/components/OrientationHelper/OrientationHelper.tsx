@@ -1,51 +1,27 @@
-import type { FacePosition } from '../../../cube/types';
+import type { FacePosition, CubeState } from '../../../cube/types';
+import { CubeView } from '../../../cube/components/CubeView';
 
-export const OrientationHelper = ({ face }: { face: FacePosition }) => {
-    let rotX = -25, rotY = -45;
-    if (face === 'F') { rotX = 0; rotY = 0; }
-    if (face === 'R') { rotX = 0; rotY = -90; }
-    if (face === 'B') { rotX = 0; rotY = -180; }
-    if (face === 'L') { rotX = 0; rotY = 90; }
-    if (face === 'U') { rotX = 90; rotY = 0; }
-    if (face === 'D') { rotX = -90; rotY = 0; }
+interface OrientationHelperProps {
+  face: FacePosition;
+  state: CubeState;
+  rotation: { x: number; y: number };
+}
 
-    const faceStyle: React.CSSProperties = {
-        position: 'absolute',
-        inset: 0,
-        backfaceVisibility: 'hidden',
-        WebkitBackfaceVisibility: 'hidden',
-        border: '1px solid rgba(156, 163, 175, 0.5)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-    };
+export const OrientationHelper = ({ state, rotation }: OrientationHelperProps) => {
+  const transform = `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`;
 
-    return (
-        <div className="w-24 h-24 relative flex items-center justify-center mb-4" style={{ perspective: '800px' }}>
-            <div className="w-16 h-16 relative transition-transform duration-500 ease-out" 
-                 style={{ 
-                    transformStyle: 'preserve-3d', 
-                    transform: `rotateX(${rotX}deg) rotateY(${rotY}deg)` 
-                 }}>
-                <div className="bg-gray-700/30" style={{ ...faceStyle, transform: 'translateZ(32px)' }} />
-                <div className="bg-gray-700/30" style={{ ...faceStyle, transform: 'rotateY(90deg) translateZ(32px)' }} />
-                <div className="bg-gray-700/30" style={{ ...faceStyle, transform: 'rotateY(180deg) translateZ(32px)' }} />
-                <div className="bg-gray-700/30" style={{ ...faceStyle, transform: 'rotateY(-90deg) translateZ(32px)' }} />
-                <div className="bg-gray-700/30" style={{ ...faceStyle, transform: 'rotateX(90deg) translateZ(32px)' }} />
-                <div className="bg-gray-700/30" style={{ ...faceStyle, transform: 'rotateX(-90deg) translateZ(32px)' }} />
-
-                <div className="bg-emerald-500 border-2 border-white animate-pulse text-xs font-bold text-black shadow-[0_0_15px_rgba(16,185,129,0.5)]" style={{ 
-                    ...faceStyle,
-                    zIndex: 10,
-                    transform: face === 'F' ? 'translateZ(34px)' :
-                               face === 'R' ? 'rotateY(90deg) translateZ(34px)' :
-                               face === 'B' ? 'rotateY(180deg) translateZ(34px)' :
-                               face === 'L' ? 'rotateY(-90deg) translateZ(34px)' :
-                               face === 'U' ? 'rotateX(90deg) translateZ(34px)' :
-                               'rotateX(-90deg) translateZ(34px)'
-                }}>{face}</div>
-            </div>
-        </div>
-    );
+  return (
+    <div className="w-40 h-40 md:w-48 md:h-48 relative flex items-center justify-center transition-all duration-500 shrink-0">
+      <div className="w-full h-full scale-[0.62] md:scale-[0.65]">
+        <CubeView
+          state={state}
+          transform={transform}
+          activeRotation={null}
+          animatingMove={null}
+          variant="mini"
+        />
+      </div>
+    </div>
+  );
 };
 
